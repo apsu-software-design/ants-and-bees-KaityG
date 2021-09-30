@@ -1,15 +1,57 @@
+//Import AntColony class and Place class from ./game file
 import {AntColony, Place} from './game';
 
+/**
+ * INSECT CLASS
+ * abstract class that represents an insect
+ * 
+ */
 export abstract class Insect {
+     /**
+     * represents the insect's name
+     */
   readonly name:string;
 
-  constructor(protected armor:number, protected place:Place){}
 
+  /**
+   * Constructor
+   * creates an insect object with the specified armor and place
+   * @param armor the insect's armor level represented by a number
+   * @param place the insect's placement represent by a Place object
+   */
+  constructor(protected armor:number, protected place:Place){}
+/**
+ * getName
+ * @return the insect's name
+ */
   getName():string { return this.name; }
+  
+  /**
+   * getArmor
+   * @return the insect's armor number
+   */
   getArmor():number { return this.armor; }
+  
+  /**
+   * getPlace
+   * @return the insect's place object
+   */
   getPlace() { return this.place; }
+
+  /**
+   * setPlace
+   * set's the insect's place object to the given place object
+   * @param place a place object to assign to the insect's place object
+   */
   setPlace(place:Place){ this.place = place; }
 
+  /**
+   * reduceArmor
+   * reduces the armor level for an insect
+   * if the armor is less than zero, it outputs the armor is gone to the user
+   * @param amount number that represent the amount to decrement from the insect's armor level.
+   * @return boolean value to determine if the armor level has depleted to zero.
+   */
   reduceArmor(amount:number):boolean {
     this.armor -= amount;
     if(this.armor <= 0){
@@ -20,8 +62,19 @@ export abstract class Insect {
     return false;
   }
 
+/**
+ * act
+ * abstract method 
+ * @param colony an optional AntColony object passed to act for implementation
+ * @return void- returns nothing
+ */
   abstract act(colony?:AntColony):void;
 
+/**
+ * toString
+ * @param no parameters
+ * @return returns a string in the specified format
+ */
   toString():string {
     return this.name + '('+(this.place ? this.place.name : '')+')';
   }
