@@ -1,21 +1,61 @@
+
+/**
+ * import these classes from the ants file
+ */
 import {Insect, Bee, Ant, GrowerAnt, ThrowerAnt, EaterAnt, ScubaAnt, GuardAnt} from './ants';
 
+/**
+ * PLACE CLASS
+ * representation of the location of an Insect
+ */
 class Place {
   protected ant:Ant;
   protected guard:GuardAnt;
   protected bees:Bee[] = [];
-
+/**
+ * constructor
+ * creates a Place object using name, water, exit, and entrance
+ * 
+ * @param name string representation of the type of insect
+ * @param water boolean value to determine if the tunnel has water
+ * @param exit optional parameter of type Place to represent an exit
+ * @param entrance optional parameter of type Place to represent an entrance
+ */
   constructor(readonly name:string,
               protected readonly water = false,
               private exit?:Place, 
               private entrance?:Place) {}
 
+
+/**
+ * getExit
+ * returns the exit Place object associated with this insect
+ * @return return insect's exit Place object
+ */
   getExit():Place { return this.exit; }
 
+  /**
+   * setEntrance
+   * sets the insect's entrance to the given place
+   * @param place Place object used to assign to insect's entrance
+   * @return returns nothing 
+   */
   setEntrance(place:Place){ this.entrance = place; }
 
+/**
+ * isWater 
+ * determines if a location has waters
+ * @param no parameters
+ * @return return boolean value
+ */
   isWater():boolean { return this.water; }
 
+/**
+ * getAnt
+ * gets an any type Ant object from current Place 
+ * @param no parameters
+ * @return returns an Ant object
+ */
   getAnt():Ant { 
     if(this.guard) 
       return this.guard;
@@ -23,12 +63,33 @@ class Place {
       return this.ant;
   }
 
+/**
+ * getGuardedAnt
+ * gets a Guarded Ant at the current Place
+ * @param no parameters
+ * @return return an Ant object
+ */
   getGuardedAnt():Ant {
     return this.ant;
   }
 
+/**
+ * getBees
+ * gets the array of bees at the current Place
+ * @param no parameters
+ * @return returns an array of Bee objects
+ */
   getBees():Bee[] { return this.bees; }
 
+
+/**
+ * getClosestBee
+ * gets the closest bee within the specified distance 
+ * 
+ * @param maxDistance number representation for maximum bound for distance
+ * @param minDistance number representation for minimum bound for distance
+ * @return returns a Bee object
+ */
   getClosestBee(maxDistance:number, minDistance:number = 0):Bee {
 		let p:Place = this;
 		for(let dist = 0; p!==undefined && dist <= maxDistance; dist++) {
@@ -39,7 +100,12 @@ class Place {
 		}
 		return undefined;
   }
-
+/**
+ * addAnt
+ * determines if an Ant object was successfully added to the location(Place)
+ * @param ant Ant object
+ * @return return boolean value to check if the ant was added
+ */
   addAnt(ant:Ant):boolean {
     if(ant instanceof GuardAnt) {
       if(this.guard === undefined){
@@ -56,7 +122,12 @@ class Place {
       }
     return false;
   }
-
+/**
+ * removeAnt
+ * removes an Ant object from the location(Place)
+ * @param no parameters
+ * @return returns an Ant object
+ */
   removeAnt():Ant {
     if(this.guard !== undefined){
       let guard = this.guard;
@@ -70,11 +141,23 @@ class Place {
     }
   }
 
+/**
+ * addBee
+ * adds a bee to the Bee array
+ * @param bee the given Bee object to add to the Bee array
+ * @return returns nothing
+ */
   addBee(bee:Bee):void {
     this.bees.push(bee);
     bee.setPlace(this);
   }
 
+/**
+ * removeBee
+ * removes a bee from the Bee array
+ * @param bee given Bee object to be removed from the Bee arrat
+ * @return returns nothing
+ */
   removeBee(bee:Bee):void {
     var index = this.bees.indexOf(bee);
     if(index >= 0){
@@ -83,16 +166,34 @@ class Place {
     }
   }
 
+/**
+ * removeAllBees
+ * removes every bee from the Bee array
+ * @param no parameters
+ * @return returns nothing
+ */
   removeAllBees():void {
     this.bees.forEach((bee) => bee.setPlace(undefined) );
     this.bees = [];
   }
 
+/**
+ * exitBee
+ * makes the bee exit the ant's tunnel
+ * @param bee given Bee object to be removed from the ant tunnel
+ * @return returns nothing
+ */
   exitBee(bee:Bee):void {
     this.removeBee(bee);
     this.exit.addBee(bee);  
   }
 
+/**
+ * removeInsect
+ * removes any given insect from a location in the tunnel
+ * @param insect given Insect object to be removed
+ * @return returns nothing
+ */
   removeInsect(insect:Insect) {
     if(insect instanceof Ant){
       this.removeAnt();
@@ -102,8 +203,15 @@ class Place {
     }
   }
 
+/**
+ * act
+ * removes any ant type other than Scuba Ant from the tunnel
+ * @param no parameters
+ * @return returns nothing 
+ */
   act() {
-    if(this.water){
+    if(this.water)
+    {
       if(this.guard){
         this.removeAnt();
       }
