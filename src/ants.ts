@@ -304,6 +304,7 @@ export class EaterAnt extends Ant {
 
     /**
      * isFull
+     * determines if the EaterAnt is full from eating an ant
      * @param no parameters
      * @return boolean
      */
@@ -313,7 +314,7 @@ export class EaterAnt extends Ant {
 /**
  * act
  * implementation of the abstract act function from the Insect class
- * determines the type of boost the ThrowerAnt will use and uses the boost on the nearest bee
+ * determines if the EaterAnt will eat the targeted bee
  * @param no parameters
  * @return returns nothing
  */
@@ -339,6 +340,7 @@ export class EaterAnt extends Ant {
   }  
 /**
  * reduceArmor
+ * EaterAnt reduces the armor of the given bee(s)
  * @param amount number representation of the amount to decrement from an insect's armor
  * @return returns boolean value
  */
