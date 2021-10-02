@@ -1,5 +1,8 @@
+//import all classes from ant.ts file
 import * as Ants from './ants';
+//import these classes from the game.ts file
 import {AntColony, AntGame, Hive} from './game';
+//import these functions fromt the ui.ts file
 import {play, showMapOf} from './ui';
 
 
