@@ -222,14 +222,31 @@ class Place {
   }
 }
 
-
+/**
+ * HIVE CLASS
+ * child class of the Place class that represents the hive
+ */
 class Hive extends Place {
   private waves:{[index:number]:Bee[]} = {}
 
+  /**
+   * constructor 
+   * creates a Hive object using beeArmor and beeDamage
+   * @param beeArmor number representation for the bee's armor amount 
+   * @param beeDamage number representation for the bee's damage amount
+   *  */  
   constructor(private beeArmor:number, private beeDamage:number){
     super('Hive');
   }
 
+/**
+ * addWave
+ * adds a wave of bees to be released on its appropriate attack turn
+ * @param attackTurn
+ * @param numBees
+ * @return returns Hive object
+ * 
+ */
   addWave(attackTurn:number, numBees:number):Hive {
     let wave:Bee[] = [];
     for(let i=0; i<numBees; i++) {
@@ -240,7 +257,15 @@ class Hive extends Place {
     this.waves[attackTurn] = wave;
     return this;
   }
-  
+
+  /**
+   * invade
+   * makes the bees invade the AntColony
+   * 
+   * @param colony AntColony object that will be invaded
+   * @param currentTurn number representation of the current turn of the game
+   * @return returns an array of Bees
+   */
   invade(colony:AntColony, currentTurn:number): Bee[]{
     if(this.waves[currentTurn] !== undefined) {
       this.waves[currentTurn].forEach((bee) => {
@@ -257,7 +282,10 @@ class Hive extends Place {
   }
 }
 
-
+/**
+ * ANT_COLONY CLASS
+ * represents an AntColony
+ */
 class AntColony {
   private food:number;
   private places:Place[][] = [];
@@ -265,10 +293,26 @@ class AntColony {
   private queenPlace:Place = new Place('Ant Queen');
   private boosts:{[index:string]:number} = {'FlyingLeaf':1,'StickyLeaf':1,'IcyLeaf':1,'BugSpray':0}
 
+/**
+ * constructor
+ * creates an AntColony object using startingFood, numTunnels, tunnelLength, and moatFrequency
+ * @param startingFood number representation of the AntColony's initial amount of food
+ * @param numTunnels number representation of the amount of tunnels in the AntColony
+ * @param tunnelLength number representation of the tunnel's length
+ * @param moatFrequency 
+ */
   constructor(startingFood:number, numTunnels:number, tunnelLength:number, moatFrequency=0){
     this.food = startingFood;
 
+/**
+ * holds previous Place
+ */
     let prev:Place;
+    /**
+     * for loop
+     * assigns the location of the tunnels, the queen's location, 
+     * and determines the type of tunnel in withing the 'places' class field
+     */
 		for(let tunnel=0; tunnel < numTunnels; tunnel++)
 		{
 			let curr:Place = this.queenPlace;
@@ -289,19 +333,50 @@ class AntColony {
 			this.beeEntrances.push(curr);
 		}
   }
-
+/**
+ * getFood
+ * @return returns a number that represents the available food amount in the AntColony
+ */
   getFood():number { return this.food; }
 
+  /**
+   * increaseFood
+   * increases the amount of food in the AntColony
+   * @param amount number representation of the amount to increment the AntColony food amount
+   * @return returns nothing
+   */
   increaseFood(amount:number):void { this.food += amount; }
 
+/**
+ * getPlaces
+ * @return returns a Place array of the placements of the AntColony's components
+ */
   getPlaces():Place[][] { return this.places; }
 
+/**
+ * getEntrances
+ * @return returns a Place array of the bee's entrance location
+ */
   getEntrances():Place[] { return this.beeEntrances; }
 
+/**
+ * getQueenPlace
+ * @return returns Place object that represents the queen ant's location 
+ */
   getQueenPlace():Place { return this.queenPlace; }
 
+/**
+ * queenHasBees
+ * determines if any bees are located in the queen's place
+ * @return returns boolean value 
+ */
   queenHasBees():boolean { return this.queenPlace.getBees().length > 0; }
 
+/**
+ * getBoosts
+ * gets available boosts in the AntColony
+ * @return array of strings
+ */
   getBoosts():{[index:string]:number} { return this.boosts; }
 
   addBoost(boost:string){
@@ -311,7 +386,13 @@ class AntColony {
     this.boosts[boost] = this.boosts[boost]+1;
     console.log('Found a '+boost+'!');
   }
-
+/**
+ * deployAnt
+ * deploys the given Ant object to the given location
+ * @param ant Ant object that will be deployed
+ * @param place Place object that represents the location of the ant object 
+ * @return returns string to output to user if the ant cannot be deployed
+ */
   deployAnt(ant:Ant, place:Place):string {
     if(this.food >= ant.getFoodCost()){
       let success = place.addAnt(ant);
@@ -324,10 +405,25 @@ class AntColony {
     return 'not enough food';
   }
 
+/**
+ * removeAnt
+ * removes an the specified place in the tunnel
+ * 
+ * @param place Place object to represent the location where to remove the ant
+ * @return returns nothing
+ */
   removeAnt(place:Place){
     place.removeAnt();
   }
 
+/**
+ * applyBoost
+ * applies the boost at the specified location
+ * 
+ * @param boost string representation of the boost's type
+ * @param place Place object to represent the location to deploy the boost
+ * @return return string if the boost cannot be applied
+ */
   applyBoost(boost:string, place:Place):string {
     if(this.boosts[boost] === undefined || this.boosts[boost] < 1) {
       return 'no such boost';
@@ -339,7 +435,13 @@ class AntColony {
     ant.setBoost(boost);
     return undefined;
   }
-
+/**
+ * antsAnt
+ * makes all the ants in the colony perform an act
+ * 
+ * @param no parameters
+ * @return returns nothing
+ */
   antsAct() {
     this.getAllAnts().forEach((ant) => {
       if(ant instanceof GuardAnt) {
@@ -351,12 +453,25 @@ class AntColony {
     });    
   }
 
+/**
+ * beesAnt
+ * makes all the bees in the hive perform an act in the AntColony
+ * 
+ * @param no parameters
+ * @return returns nothing
+ */
   beesAct() {
     this.getAllBees().forEach((bee) => {
       bee.act();
     });
   }
-
+/**
+ * placesAnt
+ * make all the places in the AntColony perform its specific act
+ * 
+ * @param no parameters
+ * @return returns nothing
+ */
   placesAct() {
     for(let i=0; i<this.places.length; i++) {
       for(let j=0; j<this.places[i].length; j++) {
@@ -365,6 +480,13 @@ class AntColony {
     }    
   }
 
+/**
+ * getAllAnts
+ * gets all the available ants from the AntColony
+ * 
+ * @param no parameters
+ * @return returns an Ant array
+ */
   getAllAnts():Ant[] {
     let ants = [];
     for(let i=0; i<this.places.length; i++) {
@@ -377,6 +499,13 @@ class AntColony {
     return ants;
   }
 
+/**
+ * getAllBees
+ * gets all the available bees from the AntColony
+ * 
+ * @param no parameters
+ * @return returns an Bee array
+ */
   getAllBees():Bee[] {
     var bees = [];
     for(var i=0; i<this.places.length; i++){
@@ -388,11 +517,25 @@ class AntColony {
   }
 }
 
-
+/**
+ * ANT_GAME CLASS
+ * representation of the AntGame
+ */
 class AntGame {
   private turn:number = 0;
+  /**
+   * constructor
+   * creates an AntGame using colony and hive
+   */
   constructor(private colony:AntColony, private hive:Hive){}
 
+/**
+ * takeTurn
+ * makes all the ants, bees, and places act each turn of the game
+ * 
+ * @param no parameters
+ * @return returns nothing
+ */
   takeTurn() {
     console.log('');
     this.colony.antsAct();
@@ -402,9 +545,19 @@ class AntGame {
     this.turn++;
     console.log('');
   }
-
+/**
+ * getTurn
+ * @return returns the current turn of the AntGame
+ */
   getTurn() { return this.turn; }
 
+/**
+ * gameIsWon
+ * determines if the AntGame has been won
+ * 
+ * @param no parameters
+ * @return returns boolean or undefined value
+ */
   gameIsWon():boolean|undefined {
     if(this.colony.queenHasBees()){
       return false;
@@ -415,6 +568,14 @@ class AntGame {
     return undefined;
   }
 
+/**
+ * deployAnt
+ * deploy the specific type of ant at the given coordinates in the AntColony
+ * 
+ * @param antType string representation of the ant's type
+ * @param placeCoordinates string representation of the ant's coordinates in the AntColony
+ * @return returns string
+ */
   deployAnt(antType:string, placeCoordinates:string):string {
     let ant;
     switch(antType.toLowerCase()) {
@@ -440,7 +601,13 @@ class AntGame {
       return 'illegal location';
     }
   }
-
+/**
+ * removeAnt
+ * removes ant from the specificed location
+ * 
+ * @param placeCoordinates string representation of the ant's coordinates 
+ * @return returns string if the ant cannot be removed at the location
+ */
   removeAnt(placeCoordinates:string):string {
     try {
       let coords = placeCoordinates.split(',');
@@ -452,6 +619,14 @@ class AntGame {
     }    
   }
 
+/**
+ * boostAnt
+ * gives an ant the specified boost
+ * 
+ * @param boostType string representation of the boost type
+ * @param placeCoordinates string representation of the coordinates to place the boost
+ * @return returns string if the boost cannot be applied at the location 
+ */
   boostAnt(boostType:string, placeCoordinates:string):string {
     try {
       let coords = placeCoordinates.split(',');
@@ -462,9 +637,28 @@ class AntGame {
     }    
   }
 
+/**
+ * getPlaces
+ * @return returns a Place array of the places in the AntColony
+ */
   getPlaces():Place[][] { return this.colony.getPlaces(); }
+
+  /**
+   * getFood
+   * @return returns a number that represents the amount of food in the AntColony
+   */
   getFood():number { return this.colony.getFood(); }
+
+  /**
+   * getHiveBeesCount
+   * @return returns a number that represents the amount of bees in the hive
+   */
   getHiveBeesCount():number { return this.hive.getBees().length; }
+
+  /**
+   * getBoostNames
+   * @return returns string that represents the boosts available 
+   */
   getBoostNames():string[] { 
     let boosts = this.colony.getBoosts();
     return Object.keys(boosts).filter((boost:string) => {
