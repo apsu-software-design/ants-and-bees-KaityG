@@ -1,19 +1,37 @@
+//import these classes from the game.ts file
 import {AntGame, AntColony, Place, Hive} from './game';
+//import these classes from the ants.ts file
 import {Ant, EaterAnt, GuardAnt} from './ants';
 
+//import vorpal library
 import vorpal = require('vorpal');
+//import chalk library for styling 
 import chalk = require('chalk');
+//import the lodash library for common utility functions for programming tasks
 import _ = require('lodash');
 
 /**
  * The Vorpal library for command-line interaction
  */
+//Vorpal object to execute Vorpal library functionality
 const Vorpal = vorpal();
 
+/**
+ * showMapOf
+ * displays the map of the AntGame
+ * @param game AntGame object 
+ * @return returns nothing
+ */
 export function showMapOf(game:AntGame){
   console.log(getMap(game));
 }
 
+/**
+ * getMap
+ * creates the map of game
+ * @param game AntGame object used to create the map
+ * @return returns nothing
+ */
 function getMap(game:AntGame) {
   let places:Place[][] = game.getPlaces();
   let tunnelLength = places[0].length;
@@ -70,7 +88,12 @@ function getMap(game:AntGame) {
   return map;
 }
 
-
+/**
+ * iconFor
+ * creates an icon using the chalk library for the specific ant type 
+ * @param ant Ant object used to create the icon
+ * @return returns nothing
+ */
 function iconFor(ant:Ant){
   if(ant === undefined){ return ' ' };
   let icon:string;
@@ -100,7 +123,12 @@ function iconFor(ant:Ant){
   return icon;
 }
 
-
+/**
+ * play
+ * starts the game and uses the Vorpal library to improve command-line functionality for the user
+ * @param game AntGame object used to start the game
+ * @return returns nothing
+ */
 export function play(game:AntGame) {
   Vorpal
     .delimiter(chalk.green('AvB $'))
